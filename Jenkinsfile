@@ -4,8 +4,10 @@ pipeline {
         registryCredential = 'dockerhub'
     }
     agent {
-        docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+        docker {
             image 'dryloayza/agent:latest'
+            registryCredentialsId 'dockerhub'
+            registryUrl 'https://hub.docker.com/repository/docker/dryloayza/agent'
         }
     }
     stages {
@@ -24,14 +26,16 @@ pipeline {
         stage('Creating docker image') {
             steps {
                 script {
-                    challengeImage = docker.build registry + ":latest"
+                    challengeImage = docker.build "dryloayza/codechallenge:latest"
                 }
             }
         }
         stage('Pushing image to dockerhub') {
             steps {
                 script {
-                    docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+                    docker {
+                        registryCredentialsId 'dockerhub'
+                        registryUrl 'https://registry.hub.docker.com'
                         challengeImage.push()
                     }
                 }
