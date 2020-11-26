@@ -6,6 +6,7 @@ pipeline {
     agent {
         docker {
             image 'dryloayza/agent:latest'
+            args '-it --entrypoint=/bin/bash'
             registryCredentialsId 'dockerhub'
             registryUrl 'https://registry.hub.docker.com'
         }
