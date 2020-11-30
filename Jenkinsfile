@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage ('Checkout & Clone repository') {
             steps {
-                git 'https://github.com/diego-yarleque/spring-boot-hello-world-jenkins-ci.git'
+                checkout scm
             }
         }
         stage ('Build Artifact') {
