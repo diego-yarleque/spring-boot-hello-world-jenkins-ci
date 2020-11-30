@@ -1,10 +1,12 @@
 pipeline {
     agent any
     stages {
-        agent {
-            docker {
-                image 'openjdk:8-jdk-alpine'
-                reuseNode true
+        stage ('Configuring docker agent') {
+            agent {
+                docker {
+                    image 'openjdk:8-jdk-alpine'
+                    reuseNode true
+                }
             }
         }
         stage ('Checkout & Clone repository') {
