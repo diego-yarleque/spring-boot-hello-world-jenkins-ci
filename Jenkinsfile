@@ -7,8 +7,6 @@ pipeline {
             }
         }
         stage ('Build Artifact') {
-            def dockerHome = tool 'docker'
-            env.PATH = "${dockerHome}/bin:${env.PATH}"
             agent {
                 docker {
                     image 'openjdk:8-jdk-alpine'
