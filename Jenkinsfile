@@ -1,44 +1,26 @@
 pipeline {
-    environment {
-        registry = "dryloayza/codechallenge"
-        registryCredential = 'dockerhub'
-    }
-    agent {
-        docker {
-            image 'dryloayza/agent:latest'
-            args '-it --entrypoint=/bin/bash'
-            registryCredentialsId 'dockerhub'
-            registryUrl 'https://registry.hub.docker.com'
-        }
-    }
+    agent any
     stages {
-        stage('Checkout') {
+        agent {
+            docker {
+                image 'openjdk:8-jdk-alpine'
+                reuseNode true
+            }
+        }
+        stage ('Checkout & Clone repository') {
             steps {
                 git 'https://github.com/diego-yarleque/spring-boot-hello-world-jenkins-ci.git'
             }
         }
-        stage('Building jar file') {
+        stage ('Build Artifact') {
             steps {
-                script {
-                    sh './gradlew clean build'
-                }
+                sh './gradlew clean build'
             }
         }
-        stage('Creating docker image') {
+        stage ('Build & Push docker image') {
             steps {
-                script {
-                    challengeImage = docker.build "dryloayza/codechallenge:latest"
-                }
-            }
-        }
-        stage('Pushing image to dockerhub') {
-            steps {
-                script {
-                    docker {
-                        registryCredentialsId 'dockerhub'
-                        registryUrl 'https://registry.hub.docker.com'
-                        challengeImage.push()
-                    }
+                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
+                    sh 'docker push dryloayza/code-challenge:latest'
                 }
             }
         }
