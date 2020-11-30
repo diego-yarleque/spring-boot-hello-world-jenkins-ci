@@ -1,16 +1,14 @@
 pipeline {
     agent any
     stages {
-        stage('Initialize docker'){
-            def dockerHome = tool 'docker'
-            env.PATH = "${dockerHome}/bin:${env.PATH}"
-        }
         stage ('Checkout & Clone repository') {
             steps {
                 checkout scm
             }
         }
         stage ('Build Artifact') {
+            def dockerHome = tool 'docker'
+            env.PATH = "${dockerHome}/bin:${env.PATH}"
             agent {
                 docker {
                     image 'openjdk:8-jdk-alpine'
